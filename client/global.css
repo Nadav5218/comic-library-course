@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 39 36% 95%;
+    --foreground: 221 39% 13%;
+    --card: 40 33% 98%;
+    --card-foreground: 221 39% 13%;
+    --popover: 40 33% 98%;
+    --popover-foreground: 221 39% 13%;
+    --primary: 225 65% 52%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 166 54% 40%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 38 24% 90%;
+    --muted-foreground: 220 12% 40%;
+    --accent: 5 73% 64%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 52%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 34 24% 84%;
+    --input: 34 24% 84%;
+    --ring: 225 65% 52%;
+    --radius: 1rem;
+    --sidebar-background: 221 39% 13%;
+    --sidebar-foreground: 40 33% 98%;
+    --sidebar-primary: 225 65% 52%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 219 26% 19%;
+    --sidebar-accent-foreground: 40 33% 98%;
+    --sidebar-border: 219 20% 24%;
+    --sidebar-ring: 225 65% 60%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    background: #f6f1e8;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    margin: 0;
+    min-width: 320px;
+    font-family:
+      Inter,
+      ui-sans-serif,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    letter-spacing: -0.025em;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  ::selection {
+    background: rgba(49, 87, 213, 0.2);
+  }
+}
+
+@layer components {
+  .page-shell {
+    min-height: 100vh;
+    background:
+      radial-gradient(
+        circle at 6% 0%,
+        rgba(232, 168, 56, 0.13),
+        transparent 28rem
+      ),
+      radial-gradient(
+        circle at 96% 18%,
+        rgba(42, 157, 143, 0.1),
+        transparent 26rem
+      ),
+      #f6f1e8;
+  }
+
+  .paper-card {
+    border: 1px solid rgba(31, 41, 55, 0.1);
+    background: rgba(255, 253, 248, 0.92);
+    box-shadow: 0 18px 45px rgba(17, 24, 39, 0.08);
+  }
+
+  .ink-card {
+    background: #111827;
+    color: #fffdf8;
+    box-shadow: 0 24px 70px rgba(17, 24, 39, 0.24);
+  }
+
+  .eyebrow {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .soft-grid {
+    background-image:
+      linear-gradient(rgba(17, 24, 39, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(17, 24, 39, 0.03) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  .comic-shadow {
+    box-shadow:
+      0 25px 55px rgba(17, 24, 39, 0.2),
+      0 4px 10px rgba(17, 24, 39, 0.12);
+  }
+
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f6f1e8];
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+}
