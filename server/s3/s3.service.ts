@@ -17,16 +17,16 @@ export interface S3UploadResult {
 @Injectable()
 export class S3Service {
   private readonly logger = new Logger(S3Service.name);
-  private readonly region = process.env.AWS_REGION;
+  private readonly region = process.env.S3_REGION;
   private readonly bucket = process.env.AWS_S3_BUCKET;
-  private readonly accessKeyId = process.env.AWS_ACCESS_KEY_ID;
-  private readonly secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+  private readonly accessKeyId = process.env.S3_ACCESS_KEY_ID;
+  private readonly secretAccessKey = process.env.S3_SECRET_ACCESS_KEY;
   private readonly client: S3Client;
 
   constructor() {
     if (!this.region || !this.bucket) {
       throw new Error(
-        "Amazon S3 is not configured. Check AWS_REGION and AWS_S3_BUCKET in .env",
+        "Amazon S3 is not configured. Check S3_REGION and AWS_S3_BUCKET in .env",
       );
     }
 
@@ -34,7 +34,7 @@ export class S3Service {
     const hasSecretKey = Boolean(this.secretAccessKey);
     if (hasAccessKey !== hasSecretKey) {
       throw new Error(
-        "AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY must either both be set or both be omitted",
+        "S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY must either both be set or both be omitted",
       );
     }
 

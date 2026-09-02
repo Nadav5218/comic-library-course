@@ -51,10 +51,10 @@ npm start
 | `JWT_SECRET`                                          | Development fallback                      | Required, long and random      |
 | `PORT`                                                | `3000`                                    | Optional                       |
 | `APP_URL`                                             | `http://localhost:8080`                   | Required public origin         |
-| `AWS_REGION`                                          | –                                         | Required                       |
+| `S3_REGION`                                          | –                                         | Required                       |
 | `AWS_S3_BUCKET`                                       | –                                         | Required                       |
-| `AWS_ACCESS_KEY_ID`                                   | –                                         | Required for local credentials |
-| `AWS_SECRET_ACCESS_KEY`                               | –                                         | Required for local credentials |
+| `S3_ACCESS_KEY_ID`                                   | –                                         | Required for local credentials |
+| `S3_SECRET_ACCESS_KEY`                               | –                                         | Required for local credentials |
 | `GMAIL_CLIENT_ID` / `GMAIL_CLIENT_SECRET`             | –                                         | Recommended for notifications  |
 | `GMAIL_REFRESH_TOKEN`                                 | –                                         | Recommended for notifications  |
 | `GMAIL_SENDER_EMAIL`                                  | –                                         | Recommended for notifications  |
