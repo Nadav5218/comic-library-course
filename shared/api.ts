@@ -71,7 +71,7 @@ export interface UserNotification {
 export interface User {
   _id: string;
   username?: string;
-  email: string;
+  email?: string;
   phone?: string;
   role: UserRole;
   readingProgress?: ReadingProgress[];
@@ -116,8 +116,23 @@ export interface ComicRequest {
   updatedAt?: string;
 }
 
+export interface ComicRequestSummary {
+  _id: string;
+  requesterUsername?: string;
+  requesterEmail?: string;
+  title: string;
+  author: string;
+  year: number;
+  category: string;
+  coverImage?: string | null;
+  status: ComicRequestStatus;
+  approvedComicId?: string | null;
+  adminNote?: string | null;
+  createdAt?: string;
+}
+
 export interface ComicRequestsResponse {
-  requests: ComicRequest[];
+  requests: ComicRequestSummary[];
 }
 
 export interface ComicRequestDetailResponse {

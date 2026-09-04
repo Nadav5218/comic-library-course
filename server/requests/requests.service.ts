@@ -115,9 +115,12 @@ export class RequestsService {
     return request;
   }
 
-  private async requestToResponse(request: ComicRequestDocument) {
+  private async requestToResponse(
+    request: ComicRequestDocument,
+    includePdf = false,
+  ) {
     const data: any = request.toObject();
-    if (data.status === "pending") {
+    if (includePdf && data.status === "pending") {
       if (
         typeof data.pdfFile === "string" &&
         data.pdfFile.startsWith("s3://")
@@ -140,6 +143,43 @@ export class RequestsService {
     delete data.reviewLock;
     delete data.reviewLockExpiresAt;
     return data;
+  }
+
+  private async requestToSummary(
+    request: ComicRequestDocument,
+    includeRequester = false,
+  ) {
+    let coverImage: string | null = request.coverImage || null;
+
+    if (
+      typeof coverImage === "string" &&
+      coverImage.startsWith("s3://")
+    ) {
+      const key =
+        request.coverPublicId || coverImage.replace("s3://", "");
+      coverImage = key ? await this.s3.getSignedUrl(key, 3600) : null;
+    }
+
+    return {
+      _id: request._id.toString(),
+      ...(includeRequester
+        ? {
+            requesterUsername: request.requesterUsername,
+            requesterEmail: request.requesterEmail,
+          }
+        : {}),
+      title: request.title,
+      author: request.author,
+      year: request.year,
+      category: request.category,
+      coverImage,
+      status: request.status,
+      approvedComicId: request.approvedComicId
+        ? request.approvedComicId.toString()
+        : null,
+      adminNote: request.adminNote ?? null,
+      createdAt: request.createdAt,
+    };
   }
 
   private async addNotification(
@@ -413,7 +453,7 @@ export class RequestsService {
       success: true,
       data: {
         requests: await Promise.all(
-          requests.map((item) => this.requestToResponse(item)),
+          requests.map((item) => this.requestToSummary(item)),
         ),
       },
     };
@@ -441,7 +481,7 @@ export class RequestsService {
       success: true,
       data: {
         requests: await Promise.all(
-          requests.map((item) => this.requestToResponse(item)),
+          requests.map((item) => this.requestToSummary(item, true)),
         ),
       },
     };
@@ -458,7 +498,7 @@ export class RequestsService {
     }
     return {
       success: true,
-      data: { request: await this.requestToResponse(request) },
+      data: { request: await this.requestToResponse(request, true) },
     };
   }
 
@@ -487,7 +527,7 @@ export class RequestsService {
     await request.save();
     return {
       success: true,
-      data: { request: await this.requestToResponse(request) },
+      data: { request: await this.requestToResponse(request, true) },
     };
   }
 

@@ -29,19 +29,27 @@ export class AuthService {
     return this.jwtService.sign(payload);
   }
 
-  private toPublicUser(user: UserDocument | any) {
-    return {
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      phone: user.phone,
-      role: user.role,
-      library: user.library,
-      readingProgress: user.readingProgress,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    };
-  }
+private toAuthUser(user: UserDocument | any) {
+  return {
+    _id: user._id,
+    username: user.username,
+    role: user.role,
+  };
+}
+
+ private toPublicUser(user: UserDocument | any) {
+  return {
+    _id: user._id,
+    username: user.username,
+    role: user.role,
+    library: user.library,
+    readingProgress: (user.readingProgress || []).map((item: any) => ({
+    comicId: item.comicId,
+    page: item.page,
+    totalPages: item.totalPages,
+   })),
+  };
+}
 
   async register(dto: RegisterDto) {
     try {
@@ -71,16 +79,14 @@ export class AuthService {
         notifications: [],
       });
 
-      const token = this.signToken({
-        id: user._id.toString(),
-        role: user.role,
-        email: user.email,
-        username: user.username,
-      });
+     const token = this.signToken({
+  id: user._id.toString(),
+  role: user.role,
+});
 
       return {
         success: true,
-        data: { token, user: this.toPublicUser(user) },
+        data: { token, user: this.toAuthUser(user) },
       };
     } catch (error: any) {
       if (error instanceof HttpException) throw error;
@@ -119,16 +125,14 @@ export class AuthService {
         );
       }
 
-      const token = this.signToken({
-        id: user._id.toString(),
-        role: user.role,
-        email: user.email,
-        username: user.username,
-      });
+     const token = this.signToken({
+  id: user._id.toString(),
+  role: user.role,
+});
 
       return {
         success: true,
-        data: { token, user: this.toPublicUser(user) },
+        data: { token, user: this.toAuthUser(user) },
       };
     } catch (error) {
       if (error instanceof HttpException) throw error;

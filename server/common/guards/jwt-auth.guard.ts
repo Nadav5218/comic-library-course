@@ -38,20 +38,18 @@ export class JwtAuthGuard implements CanActivate {
     try {
       const payload = this.jwtService.verify<AuthUser>(token);
       const dbUser = await this.userModel
-        .findById(payload.id)
-        .select("username email role")
-        .lean();
+  .findById(payload.id)
+  .select("role")
+  .lean();
 
       if (!dbUser) {
         throw new Error("User no longer exists");
       }
 
       request.user = {
-        id: dbUser._id.toString(),
-        username: dbUser.username,
-        email: dbUser.email,
-        role: dbUser.role,
-      };
+  id: dbUser._id.toString(),
+  role: dbUser.role,
+};
       return true;
     } catch {
       throw new HttpException(

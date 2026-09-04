@@ -92,15 +92,18 @@ export default function ComicDetail() {
   }, [id, token]);
 
   useEffect(() => {
-    if (!viewerRef.current) return;
-    const observer = new ResizeObserver(([entry]) => {
-      if (!entry) return;
-      setViewerWidth(entry.contentRect.width);
-      setViewerHeight(entry.contentRect.height);
-    });
-    observer.observe(viewerRef.current);
-    return () => observer.disconnect();
-  }, []);
+  if (!viewerRef.current) return;
+
+  const observer = new ResizeObserver(([entry]) => {
+    if (!entry) return;
+    setViewerWidth(entry.contentRect.width);
+    setViewerHeight(entry.contentRect.height);
+  });
+
+  observer.observe(viewerRef.current);
+
+  return () => observer.disconnect();
+}, [loading]);
 
   const saveProgress = async (page: number, keepalive = false) => {
     const activeComic = comicRef.current;
@@ -244,11 +247,18 @@ export default function ComicDetail() {
     else navigate("/");
   };
 
-  const pageSize =
-    fitMode === "width"
-      ? { width: Math.max(320, Math.min(1200, viewerWidth - 48)) * zoom }
-      : { height: Math.max(380, Math.min(1200, viewerHeight - 48)) * zoom };
+  const isMobileViewer = viewerWidth < 768;
 
+const pageSize =
+  isMobileViewer || fitMode === "width"
+    ? {
+        width:
+          Math.max(240, Math.min(1200, viewerWidth - 48)) * zoom,
+      }
+    : {
+        height:
+          Math.max(380, Math.min(1200, viewerHeight - 48)) * zoom,
+      };
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#0b1120] text-sm font-bold text-white/50">
