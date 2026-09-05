@@ -33,7 +33,13 @@ export const requestUploadOptions: MulterOptions = {
   }),
   fileFilter: (_req, file, cb) => {
     if (file.fieldname === "pdfFile") {
-      cb(null, file.mimetype === "application/pdf");
+      const extension = path.extname(file.originalname).toLowerCase();
+      const allowedMimeTypes = ["application/pdf", "application/octet-stream"];
+
+      cb(
+        null,
+        extension === ".pdf" || allowedMimeTypes.includes(file.mimetype),
+      );
       return;
     }
     if (file.fieldname === "coverImage") {

@@ -331,6 +331,7 @@ export default function AdminRequestReview() {
                 value={partNumber}
                 onChange={setPartNumber}
                 type="number"
+                min={1}
                 disabled={!editable}
               />
             </div>
@@ -412,8 +413,8 @@ export default function AdminRequestReview() {
             <AlertDialogTitle>Reject this submission?</AlertDialogTitle>
             <AlertDialogDescription>
               The submission will stay in the user’s history as not approved and
-              will not be published. The administrator note above will be sent to
-              the user as the rejection reason when provided.
+              will not be published. The administrator note above will be sent
+              to the user as the rejection reason when provided.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -437,12 +438,14 @@ function Field({
   onChange,
   type = "text",
   disabled = false,
+  min,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   type?: string;
   disabled?: boolean;
+  min?: number;
 }) {
   return (
     <label className="block">
@@ -454,7 +457,8 @@ function Field({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         disabled={disabled}
-        className="focus-ring h-11 w-full rounded-2xl border border-black/10 bg-white px-4 text-sm font-semibold disabled:bg-black/[0.03]"
+        min={min}
+        className="focus-ring h-11 w-full rounded-2xl border border-black/10 bg-white px-4 text-sm font-semibolddisabled:bg-black/[0.03]"
       />
     </label>
   );

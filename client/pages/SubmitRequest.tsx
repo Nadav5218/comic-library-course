@@ -218,6 +218,7 @@ export default function SubmitRequest() {
                 value={partNumber}
                 onChange={setPartNumber}
                 type="number"
+                min={1}
                 placeholder="Optional"
               />
             </div>
@@ -309,6 +310,7 @@ function Field({
   type = "text",
   required = false,
   placeholder,
+  min,
 }: {
   label: string;
   value: string;
@@ -316,6 +318,7 @@ function Field({
   type?: string;
   required?: boolean;
   placeholder?: string;
+  min?: number;
 }) {
   return (
     <label className="block">
@@ -328,6 +331,7 @@ function Field({
         onChange={(event) => onChange(event.target.value)}
         required={required}
         placeholder={placeholder}
+        min={min}
         className="focus-ring h-12 w-full rounded-2xl border border-black/10 bg-white px-4 text-sm font-semibold"
       />
     </label>
