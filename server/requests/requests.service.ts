@@ -120,29 +120,47 @@ export class RequestsService {
     includePdf = false,
   ) {
     const data: any = request.toObject();
+
+    let pdfFile: string | null = null;
+
     if (includePdf && data.status === "pending") {
       if (
         typeof data.pdfFile === "string" &&
         data.pdfFile.startsWith("s3://")
       ) {
         const key = data.pdfPublicId || data.pdfFile.replace("s3://", "");
-        data.pdfFile = key ? await this.s3.getSignedPdfUrl(key, 1800) : null;
+        pdfFile = key ? await this.s3.getSignedPdfUrl(key, 1800) : null;
       }
-    } else {
-      data.pdfFile = null;
     }
-    if (
-      typeof data.coverImage === "string" &&
-      data.coverImage.startsWith("s3://")
-    ) {
-      const key = data.coverPublicId || data.coverImage.replace("s3://", "");
-      data.coverImage = key ? await this.s3.getSignedUrl(key, 3600) : null;
+
+    let coverImage: string | null = data.coverImage || null;
+
+    if (typeof coverImage === "string" && coverImage.startsWith("s3://")) {
+      const key = data.coverPublicId || coverImage.replace("s3://", "");
+      coverImage = key ? await this.s3.getSignedUrl(key, 3600) : null;
     }
-    delete data.pdfPublicId;
-    delete data.coverPublicId;
-    delete data.reviewLock;
-    delete data.reviewLockExpiresAt;
-    return data;
+
+    return {
+      _id: data._id.toString(),
+      requesterUsername: data.requesterUsername,
+      requesterEmail: data.requesterEmail,
+      requesterPhone: data.requesterPhone || "",
+      title: data.title,
+      author: data.author,
+      year: data.year,
+      category: data.category,
+      description: data.description || "",
+      partNumber: data.partNumber ?? null,
+      partName: data.partName ?? null,
+      pdfFile,
+      coverImage,
+      originalFileName: data.originalFileName,
+      status: data.status,
+      approvedComicId: data.approvedComicId
+        ? data.approvedComicId.toString()
+        : null,
+      adminNote: data.adminNote ?? null,
+    };
   }
 
   private async requestToSummary(
@@ -151,12 +169,8 @@ export class RequestsService {
   ) {
     let coverImage: string | null = request.coverImage || null;
 
-    if (
-      typeof coverImage === "string" &&
-      coverImage.startsWith("s3://")
-    ) {
-      const key =
-        request.coverPublicId || coverImage.replace("s3://", "");
+    if (typeof coverImage === "string" && coverImage.startsWith("s3://")) {
+      const key = request.coverPublicId || coverImage.replace("s3://", "");
       coverImage = key ? await this.s3.getSignedUrl(key, 3600) : null;
     }
 

@@ -116,26 +116,49 @@ export class ComicsService {
   async toCard(comic: ComicDocument | any) {
     const data =
       typeof comic.toObject === "function" ? comic.toObject() : { ...comic };
+
     const coverImage = await this.signedCover(data);
-    delete data.pdfFile;
-    delete data.pdfPublicId;
-    delete data.coverPublicId;
-    return { ...data, coverImage };
+
+    return {
+      _id: data._id.toString(),
+      title: data.title,
+      author: data.author,
+      year: data.year,
+      category: data.category,
+      coverImage,
+      partNumber: data.partNumber ?? null,
+      partName: data.partName ?? null,
+    };
   }
 
   private async toReader(comic: ComicDocument) {
     const data: any = comic.toObject();
-    data.coverImage = await this.signedCover(data);
-    if (
-      typeof data.pdfFile === "string" &&
-      data.pdfFile.startsWith("s3://")
-    ) {
-      const key = data.pdfPublicId || data.pdfFile.replace("s3://", "");
-      data.pdfFile = key ? await this.s3.getSignedPdfUrl(key, 7200) : null;
+
+    const coverImage = await this.signedCover(data);
+
+    let pdfFile: string | null = null;
+
+    if (typeof data.pdfFile === "string") {
+      if (data.pdfFile.startsWith("s3://")) {
+        const key = data.pdfPublicId || data.pdfFile.replace("s3://", "");
+        pdfFile = key ? await this.s3.getSignedPdfUrl(key, 7200) : null;
+      } else {
+        pdfFile = data.pdfFile;
+      }
     }
-    delete data.pdfPublicId;
-    delete data.coverPublicId;
-    return data;
+
+    return {
+      _id: data._id.toString(),
+      title: data.title,
+      author: data.author,
+      year: data.year,
+      category: data.category,
+      pdfFile,
+      coverImage,
+      description: data.description || "",
+      partNumber: data.partNumber ?? null,
+      partName: data.partName ?? null,
+    };
   }
 
   async findAll() {
@@ -189,8 +212,16 @@ export class ComicsService {
         HttpStatus.NOT_FOUND,
       );
     }
-    const progress =
+    const progressItem =
       user?.readingProgress?.find((item: any) => item.comicId === id) || null;
+
+    const progress = progressItem
+      ? {
+          comicId: progressItem.comicId,
+          page: progressItem.page,
+          totalPages: progressItem.totalPages,
+        }
+      : null;
     return {
       success: true,
       data: { comic: await this.toReader(comic), progress },
