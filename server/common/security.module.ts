@@ -33,10 +33,12 @@ const logger = new Logger("SecurityModule");
             expiresIn: "8h",
             issuer: "comic-library",
             audience: "comic-library-web",
+            algorithm: "HS256",
           },
           verifyOptions: {
             issuer: "comic-library",
             audience: "comic-library-web",
+            algorithms: ["HS256"],
           },
         };
       },

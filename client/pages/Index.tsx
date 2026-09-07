@@ -222,6 +222,24 @@ export default function Index() {
   }, []);
 
   useEffect(() => {
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === "visible") {
+        void load();
+
+        if (token) {
+          void refreshUser().then((fresh) => setUser(fresh));
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", refreshWhenVisible);
+
+    return () => {
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
+    };
+  }, [token]);
+
+  useEffect(() => {
     setUser(initialUser);
   }, [initialUser]);
 
@@ -357,9 +375,7 @@ export default function Index() {
 
   const repairCovers = async () => {
     if (!token || !isAdmin) return;
-    const missing = comics.filter(
-      (comic) => !comic.coverImage && comic._id,
-    );
+    const missing = comics.filter((comic) => !comic.coverImage && comic._id);
     if (!missing.length) {
       setMessage("Every PDF already has a cover.");
       return;
@@ -602,11 +618,8 @@ export default function Index() {
                     Cover maintenance
                   </div>
                   <div className="mt-1 text-sm leading-6 text-[#667085]">
-                    {
-                      comics.filter((item) => !item.coverImage)
-                        .length
-                    }{" "}
-                    PDFs still need a permanent page-one cover.
+                    {comics.filter((item) => !item.coverImage).length} PDFs
+                    still need a permanent page-one cover.
                   </div>
                   <div className="mt-3 text-xs font-bold uppercase tracking-[0.1em] text-[#7557d9]">
                     Private S3 storage
