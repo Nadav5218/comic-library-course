@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    /* NestJS server build. The client keeps using the root tsconfig.json. */
+    "module": "Node16",
+    "moduleResolution": "Node16",
+    "target": "ES2021",
+    "useDefineForClassFields": false,
+    "lib": ["ES2021"],
+
+    /* Required by NestJS dependency injection */
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "declaration": false,
+    "incremental": false,
+
+    /* Same permissive settings as the original project */
+    "strict": false,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "strictPropertyInitialization": false,
+    "noFallthroughCasesInSwitch": false,
+
+    /* rootDir "." + outDir "dist" => dist/server/main.js */
+    "rootDir": "./",
+    "outDir": "./dist",
+    "paths": {
+      "@shared/*": ["./shared/*"]
+    },
+    "types": ["node", "multer"]
+  },
+  "include": ["server/**/*", "shared/**/*"],
+  "exclude": ["node_modules", "dist", "client", "netlify", "**/*.spec.ts"]
+}
