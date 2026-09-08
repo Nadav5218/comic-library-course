@@ -13,6 +13,7 @@ import { AppHeader } from "@/components/app/AppHeader";
 import { useAuth } from "@/hooks/useAuth";
 import { generatePdfCover } from "@/lib/pdfCover";
 import { uploadForm } from "@/lib/upload";
+import { toast } from "@/hooks/use-toast";
 
 export default function AddComic() {
   const navigate = useNavigate();
@@ -120,6 +121,12 @@ export default function AddComic() {
         setProgress,
       );
       const id = data?.data?.comic?._id;
+
+      toast({
+        title: "Comic published",
+        description: "The comic was added successfully.",
+      });
+
       navigate(id ? `/comic/${id}` : "/", { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed");

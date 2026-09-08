@@ -36,7 +36,7 @@ export default defineConfig(() => ({
     outDir: "dist/spa",
     sourcemap: false,
   },
-  plugins: [react()],
+  plugins: [react({ tsDecorators: true })],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./client"),
