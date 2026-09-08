@@ -339,8 +339,8 @@ export class ComicsService {
     requireAll: boolean,
   ) {
     const source: any = { ...dto };
-    if (source.partNumber === "" || source.partNumber === undefined)
-      source.partNumber = null;
+    if (source.partNumber === "") source.partNumber = null;
+    if (requireAll && source.partNumber === undefined) source.partNumber = null;
     if (source.partName === "") source.partName = null;
 
     if (requireAll) {

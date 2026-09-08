@@ -10,8 +10,6 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  Navigate,
-  useLocation,
 } from "react-router-dom";
 import Index from "./pages/Index";
 import ComicDetail from "./pages/ComicDetail";
@@ -27,33 +25,8 @@ import AdminRequestReview from "./pages/AdminRequestReview";
 import Series from "./pages/Series";
 import { AuthProvider, useAuth } from "./hooks/useAuth";
 import { AppErrorBoundary } from "./components/app/AppErrorBoundary";
+import { ProtectedRoute } from "./components/app/ProtectedRoute";
 const queryClient = new QueryClient();
-const ProtectedRoute = ({
-  children,
-  adminOnly = false,
-}: {
-  children: React.ReactNode;
-  adminOnly?: boolean;
-}) => {
-  const { user, isAdmin, authReady } = useAuth();
-  const location = useLocation();
-  if (!authReady) {
-    return <div className="min-h-screen bg-[#f6f1e8]" />;
-  }
-  if (!user) {
-    return (
-      <Navigate
-        to="/login"
-        replace
-        state={{ from: location.pathname + location.search }}
-      />
-    );
-  }
-  if (adminOnly && !isAdmin) {
-    return <Navigate to="/" replace />;
-  }
-  return <>{children}</>;
-};
 const App = () => (
   <AppErrorBoundary>
     <QueryClientProvider client={queryClient}>
