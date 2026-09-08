@@ -55,6 +55,7 @@ function mockCatalog() {
               coverImage: null,
               partNumber: 1,
               partName: "Main Story",
+              createdAt: "2025-01-01T00:00:00.000Z",
             },
           ],
         },
@@ -77,7 +78,9 @@ describe("Catalog page", () => {
       (await screen.findAllByText("Test Comic")).length,
     ).toBeGreaterThan(0);
 
-    expect(screen.getByText("Test Author")).toBeInTheDocument();
+    expect(
+      screen.getByText("Test Author"),
+    ).toBeInTheDocument();
 
     expect(fetch).toHaveBeenCalledWith(
       "/api/comics",
@@ -87,6 +90,7 @@ describe("Catalog page", () => {
 
   it("shows an empty state when search has no matches", async () => {
     const user = userEvent.setup();
+
     mockCatalog();
 
     render(
@@ -107,5 +111,80 @@ describe("Catalog page", () => {
     expect(
       screen.getByText("No matches"),
     ).toBeInTheDocument();
+  });
+
+  it("sorts comics by creation date when Recently added is selected", async () => {
+    const user = userEvent.setup();
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          success: true,
+          data: {
+            comics: [
+              {
+                _id: "507f191e810c19729de860e1",
+                title: "Older Comic",
+                author: "Author",
+                year: 2025,
+                category: "Testing",
+                coverImage: null,
+                partNumber: 1,
+                partName: "Main Story",
+                createdAt: "2025-01-01T00:00:00.000Z",
+              },
+              {
+                _id: "507f191e810c19729de860e2",
+                title: "Newer Comic",
+                author: "Author",
+                year: 2025,
+                category: "Testing",
+                coverImage: null,
+                partNumber: 2,
+                partName: "Main Story",
+                createdAt: "2026-01-01T00:00:00.000Z",
+              },
+            ],
+          },
+        }),
+      }),
+    );
+
+    const { container } = render(
+      <MemoryRouter>
+        <Index />
+      </MemoryRouter>,
+    );
+
+    await screen.findAllByText("Older Comic");
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /Filters/i,
+      }),
+    );
+
+    const sortSelect = screen.getByDisplayValue(
+      "Lecture order: 1, 2, 3…",
+    );
+
+    await user.selectOptions(
+      sortSelect,
+      "recent",
+    );
+
+    const titles = Array.from(
+      container.querySelectorAll(
+        "article a.line-clamp-2",
+      ),
+    ).map((element) => element.textContent);
+
+    expect(titles).toEqual([
+      "Newer Comic",
+      "Older Comic",
+    ]);
   });
 });

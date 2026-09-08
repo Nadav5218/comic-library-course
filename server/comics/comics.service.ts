@@ -128,6 +128,7 @@ export class ComicsService {
       coverImage,
       partNumber: data.partNumber ?? null,
       partName: data.partName ?? null,
+      createdAt: data.createdAt,
     };
   }
 
