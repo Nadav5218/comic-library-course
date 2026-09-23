@@ -803,6 +803,19 @@ export default function Index() {
         </section>
       </main>
 
+      <footer className="border-t border-black/10 bg-white/60">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-6 text-sm text-[#7b8493] sm:flex-row">
+          <span>© {new Date().getFullYear()} Comic Library</span>
+
+          <Link
+            to="/privacy"
+            className="font-bold text-[#667085] transition hover:text-[#3157d5]"
+          >
+            Privacy Policy
+          </Link>
+        </div>
+      </footer>
+
       <AlertDialog
         open={Boolean(comicToDelete)}
         onOpenChange={(open) => !open && setComicToDelete(null)}
