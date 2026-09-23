@@ -39,7 +39,7 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "9.7.3",
-    "multer": "2.2.0",
+    "multer": "^2.4.0",
     "react-pdf": "^10.2.0",
     "react-router-dom": "^7.18.3",
     "reflect-metadata": "^0.2.2",
@@ -121,6 +121,9 @@
     "vaul": "^1.1.2",
     "vite": "^7.3.6",
     "vitest": "^3.2.4"
+  },
+  "overrides": {
+    "multer": "$multer"
   },
   "engines": {
     "node": ">=22 <25",
